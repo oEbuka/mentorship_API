@@ -1,0 +1,13 @@
+// .eslintrc.json
+{
+    "extends": "airbnb-base",
+    "rules": {
+      "no-console": "off",
+      "import/no-unresolved": "off",
+      "import/extensions": "off"
+    },
+    "env": {
+      "node": true,
+      "jest": true
+    }
+  }
