@@ -1,51 +1,9 @@
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
+const BaseModel = require('./baseModel');
 
-const dataFilePath = path.join(__dirname, '..', 'data', 'reviews.json');
-
-class Review {
+class Review extends BaseModel{
   constructor() {
-    this.reviews = [];
-    this.initializeDataStore();
-  }
-
-  initializeDataStore() {
-    try {
-      const dataDir = path.dirname(dataFilePath);
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
-      }
-
-      if (fs.existsSync(dataFilePath)) {
-        const data = fs.readFileSync(dataFilePath, 'utf8');
-        this.reviews = JSON.parse(data);
-        console.log('Review data loaded from file');
-      } else {
-        this.saveData();
-        console.log('New reviews data file created');
-      }
-    } catch (error) {
-      console.error('Error initializing review data store:', error);
-    }
-  }
-
-  saveData() {
-    try {
-      const dataDir = path.dirname(dataFilePath);
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
-      }
-      fs.writeFileSync(dataFilePath, JSON.stringify(this.reviews, null, 2));
-      return true;
-    } catch (error) {
-      console.error('Error saving review data:', error);
-      return false;
-    }
-  }
-
-  findAll() {
-    return this.reviews;
+    super('reviews.json')
   }
 
   findById(id) {

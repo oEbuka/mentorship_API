@@ -1,63 +1,17 @@
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
+const BaseModel = require('./baseModel');
 
-const dataFilePath = path.join(__dirname, '..', 'data', 'sessions.json');
-
-class Session {
+class Session extends BaseModel {
   constructor() {
-    this.sessions = [];
-    this.initializeDataStore();
-  }
-
-  initializeDataStore() {
-    try {
-      const dataDir = path.dirname(dataFilePath);
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
-      }
-
-      if (fs.existsSync(dataFilePath)) {
-        const data = fs.readFileSync(dataFilePath, 'utf8');
-        this.sessions = JSON.parse(data);
-        console.log('Session data loaded from file');
-      } else {
-        this.saveData();
-        console.log('New sessions data file created');
-      }
-    } catch (error) {
-      console.error('Error initializing session data store:', error);
-    }
-  }
-
-  saveData() {
-    try {
-      const dataDir = path.dirname(dataFilePath);
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
-      }
-      fs.writeFileSync(dataFilePath, JSON.stringify(this.sessions, null, 2));
-      return true;
-    } catch (error) {
-      console.error('Error saving session data:', error);
-      return false;
-    }
-  }
-
-  findAll() {
-    return this.sessions;
-  }
-
-  findById(id) {
-    return this.sessions.find((session) => session.id === id);
+    super('sessions.json');
   }
 
   findByUserId(userId) {
-    return this.sessions.filter((session) => session.userId === userId);
+    return this.data.filter((session) => session.userId === userId);
   }
 
   findByMentorId(mentorId) {
-    return this.sessions.filter((session) => session.mentorId === mentorId);
+    return this.data.filter((session) => session.mentorId === mentorId);
   }
 
   create(sessionData) {
@@ -74,34 +28,34 @@ class Session {
       updatedAt: new Date(),
     };
 
-    this.sessions.push(newSession);
+    this.data.push(newSession);
     this.saveData(); // save to file after adding a new session
     
     return newSession;
   }
 
   update(sessionId, updates) {
-    const sessionIndex = this.sessions.findIndex((session) => session.id === sessionId);
+    const sessionIndex = this.data.findIndex((session) => session.id === sessionId);
     
     if (sessionIndex === -1) return null;
     
-    this.sessions[sessionIndex] = {
-      ...this.sessions[sessionIndex],
+    this.data[sessionIndex] = {
+      ...this.data[sessionIndex],
       ...updates,
       updatedAt: new Date()
     };
     
     this.saveData(); 
     
-    return this.sessions[sessionIndex];
+    return this.data[sessionIndex];
   }
 
   delete(sessionId) {
-    const sessionIndex = this.sessions.findIndex((session) => session.id === sessionId);
+    const sessionIndex = this.data.findIndex((session) => session.id === sessionId);
     
     if (sessionIndex === -1) return false;
     
-    this.sessions.splice(sessionIndex, 1);
+    this.data.splice(sessionIndex, 1);
     this.saveData(); 
     
     return true;
@@ -121,7 +75,7 @@ class Session {
   // get upcoming sessions for a mentor
   getUpcomingSessionsForMentor(mentorId) {
     const now = new Date();
-    return this.sessions.filter((session) => 
+    return this.data.filter((session) => 
       session.mentorId === mentorId && 
       session.status === 'approved' && 
       new Date(session.scheduledDate) > now
@@ -131,7 +85,7 @@ class Session {
   // Get past sessions for a user
   getPastSessionsForUser(userId) {
     const now = new Date();
-    return this.sessions.filter((session) => 
+    return this.data.filter((session) => 
       session.userId === userId && 
       (session.status === 'completed' || 
        (session.status === 'approved' && new Date(session.scheduledDate) < now))

@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "id": "f47f5a42-e580-4121-88d7-706faabc51b9",
+    "firstName": "my",
+    "lastName": "friend",
+    "email": "friend@gmail.com",
+    "password": "$2b$10$/feEXeVdjk/FvXAlrsOGQ.w2tUZfaZj1/vFPpt46FoJQdhtjDLsR.",
+    "role": "user",
+    "isMentor": false,
+    "bio": "great developer",
+    "skills": [
+      "Backend Engineering"
+    ],
+    "createdAt": "2025-04-27T12:28:00.687Z",
+    "updatedAt": "2025-04-27T12:28:00.687Z"
+  }
+]

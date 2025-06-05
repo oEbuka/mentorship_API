@@ -1,4 +1,3 @@
-// src/utils/responseHandler.js
 const successResponse = (res, status, message, data) => {
     res.status(status).json({
       status,
